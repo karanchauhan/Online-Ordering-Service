@@ -192,8 +192,8 @@ HttpStatus: 200 OK
                 {
                     "menuItemId": "202663b1-472f-4258-b7a7-83116c6bd4a2",
                     "itemName": "Pepperoni Pizza",
-                    "itemPrice": "2",
-                    "itemDescription": "Made with the finest pork in town"
+		    "itemPrice": "2",
+		    "itemDescription": "Made with the finest pork in town"
                 },
                 {
                     "menuItemId": "46c25ed8-1360-4828-aa99-18417ce7eab2",
