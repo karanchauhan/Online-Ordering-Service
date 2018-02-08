@@ -71,6 +71,7 @@ Using this API, a user can create a restaurant. He can choose to add list of men
 
 #### Sample input
 ```json
+POST http://127.0.0.1:8080/restaurant
 {
     "name": "Raylene Continental House",
     "address": "New York",
@@ -110,6 +111,7 @@ Using this API, a user can create a menu for a restaurant.
 
 ```json
 #### Sample input
+POST http://127.0.0.1:8080/menu/
 {
     {
     "restaurantId":"f41924cf-43a3-4525-a694-76a0435f5853",
@@ -131,7 +133,7 @@ Using this API, a user can create a menu for a restaurant.
             "itemDescription":"Go back to the basics with this chef special"
         }
      ]
-}
+    }
 }
 ```
 
@@ -165,4 +167,50 @@ Using this API, a user can create a menu for a restaurant.
     "mealType": "DINNER"
 }
 ```
-   
+
+### 3.3 GET /restaurant?type=
+
+This API returns a complete view of the restaurant with all its menus. If the query parameter, 'type' is set, then it will return a menu of that mealType only.
+
+#### Sample input
+```json
+GET http://127.0.0.1:8080/restaurant/f41924cf-43a3-4525-a694-76a0435f5853?type=dinner
+```
+#### Sample output
+```json
+{
+    "id": "f41924cf-43a3-4525-a694-76a0435f5853",
+    "name": "Raylene Continental House",
+    "address": "New York",
+    "minOrder": 20,
+    "rating": 4.7,
+    "menu": [
+        {
+            "menuId": "41b6f704-63e1-4815-8ae2-9eb015bc143b",
+            "menuItems": [
+                {
+                    "menuItemId": "202663b1-472f-4258-b7a7-83116c6bd4a2",
+                    "itemName": "Pepperoni Pizza",
+                    "itemPrice": "2",
+                    "itemDescription": "Made with the finest pork in town"
+                },
+                {
+                    "menuItemId": "46c25ed8-1360-4828-aa99-18417ce7eab2",
+                    "itemName": "Kolkata Rolls",
+                    "itemPrice": "3",
+                    "itemDescription": "One of the finest dishes straight from India"
+                },
+                {
+                    "menuItemId": "e6dfde0b-cc54-4200-b3ca-9e0eefe25a09",
+                    "itemName": "Mac and Cheese",
+                    "itemPrice": "4",
+                    "itemDescription": "Go back to the basics with this chef special"
+                }
+            ],
+            "restaurantId": "f41924cf-43a3-4525-a694-76a0435f5853",
+            "mealType": "DINNER"
+        }
+    ]
+}
+```
+
