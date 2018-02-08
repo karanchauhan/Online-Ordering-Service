@@ -108,6 +108,7 @@ Using this API, a user can create a menu for a restaurant.
 |itemPrice    | String | Price of menu item | Yes |
 |itemDescription    | String | Description of menu item | No |
 
+```json
 #### Sample input
 {
     {
@@ -132,7 +133,11 @@ Using this API, a user can create a menu for a restaurant.
      ]
 }
 }
+```
+
 #### Sample output
+
+```json
  HttpStatus: 201 Created
 {
     "menuId": "41b6f704-63e1-4815-8ae2-9eb015bc143b",
@@ -159,4 +164,5 @@ Using this API, a user can create a menu for a restaurant.
     "restaurantId": "f41924cf-43a3-4525-a694-76a0435f5853",
     "mealType": "DINNER"
 }
+```
    
