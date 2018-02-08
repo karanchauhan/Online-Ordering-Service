@@ -4,5 +4,5 @@ import com.zappos.onlineordering.model.Restaurant;
 
 public interface RestaurantService {
 
-	public void createRestaurant(Restaurant request);
+	public Restaurant createRestaurant(Restaurant request);
 }

@@ -1,8 +1,11 @@
 package com.zappos.onlineordering.repository;
 
-import org.springframework.stereotype.Repository;
+import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
+import org.springframework.data.repository.CrudRepository;
 
-@Repository
-public interface RestaurantRepository {
+import com.zappos.onlineordering.model.Restaurant;
+
+@EnableScan
+public interface RestaurantRepository extends CrudRepository<Restaurant, String> {
 
 }

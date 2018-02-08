@@ -25,11 +25,11 @@ import com.zappos.onlineordering.utils.Constants;
 public class TableInit {
 
 	@Autowired
-	AmazonDynamoDB db;
+	AmazonDynamoDB amazonDynamoDB;
 
 	@PostConstruct
 	public void init() {
-		DynamoDB dynamoDB = new DynamoDB(db);
+		DynamoDB dynamoDB = new DynamoDB(amazonDynamoDB);
 		TableCollection<ListTablesResult> tables = dynamoDB.listTables();
 		Iterator<Table> iter = tables.iterator();
 		List<String> tableNames = new ArrayList<>();
@@ -50,7 +50,7 @@ public class TableInit {
 	private void createTable(DynamoDB dynamoDB, String tableName) {
 		try {
 			List<AttributeDefinition> attributeDefinitions = new ArrayList<AttributeDefinition>();
-			attributeDefinitions.add(new AttributeDefinition().withAttributeName("Id").withAttributeType("N"));
+			attributeDefinitions.add(new AttributeDefinition().withAttributeName("Id").withAttributeType("S"));
 
 			List<KeySchemaElement> keySchema = new ArrayList<KeySchemaElement>();
 			keySchema.add(new KeySchemaElement().withAttributeName("Id").withKeyType(KeyType.HASH));

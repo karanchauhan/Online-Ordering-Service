@@ -2,7 +2,6 @@ package com.zappos.onlineordering.model;
 
 import java.util.List;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
@@ -21,7 +20,7 @@ public class Restaurant {
 	@DynamoDBAttribute
 	String name;
 
-	@NotBlank
+	@JsonInclude(Include.NON_NULL)
 	@Size(max = 140)
 	@DynamoDBAttribute
 	String address;
@@ -29,9 +28,11 @@ public class Restaurant {
 	@JsonInclude(Include.NON_NULL)
 	List<Menu> menus;
 
+	@JsonInclude(Include.NON_NULL)
 	@DynamoDBAttribute
 	Double minOrder;
 
+	@JsonInclude(Include.NON_NULL)
 	@DynamoDBAttribute
 	Double rating;
 
@@ -87,6 +88,19 @@ public class Restaurant {
 
 	public void setRating(Double rating) {
 		this.rating = rating;
+	}
+
+	public Restaurant(String id, String name, String address, List<Menu> menus, Double minOrder, Double rating) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.address = address;
+		this.menus = menus;
+		this.minOrder = minOrder;
+		this.rating = rating;
+	}
+
+	public Restaurant() {
 	}
 
 }
