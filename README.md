@@ -62,7 +62,7 @@ Using this API, a user can create a restaurant. He can choose to add list of men
 
 #### Request body
 | Field        | Type           | Description  |  Required  |
-| ------------- |:-------------:| :-------------|
+| ------------- |:-------------:| :-------------| :-------------|
 |name    | String | Name of the restaurant | Yes |
 | address     | String      |   List of values for the key | Yes |
 | minOrder | Double |  Minimum order for the restaurant | No|
