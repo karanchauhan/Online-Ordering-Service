@@ -58,7 +58,7 @@ The project has implemented the following APIs for the food ordering service:
 
 ### 3.1 POST /restaurant
 
-Using this API, a user can create a restaurant. He can choose to add list of menus now, or via the POST /restaurant/{id}
+Using this API, a user can create a restaurant. He can choose to add list of menus now, or via the POST /menu
 
 #### Request body
 | Field        | Type           | Description  |  Required  |
@@ -84,5 +84,75 @@ Using this API, a user can create a restaurant. He can choose to add list of men
     "address": "New York",
     "minOrder": 20,
     "rating": 4.7
+}
+
+### 3.2 POST /restaurant/{id}
+
+Using this API, a user can create a menu for a restaurant. 
+
+#### Request body
+| Field        | Type           | Description  |  Required  |
+| ------------- |:-------------:| :-------------| :-------------|
+|restaurantId    | String | Id of the restaurant | Yes |
+| mealType     | String      |   Meal type of this meal | Yes |
+| menuItems | List<MenuItem> | List of menu Items. The menu item object is described below | No|
+
+#### MenuItem object
+| Field        | Type           | Description  |  Required  |
+| ------------- |:-------------:| :-------------| :-------------|
+|itemName    | String | Name of menu item | Yes |
+|itemPrice    | String | Price of menu item | Yes |
+|itemDescription    | String | Description of menu item | No |
+
+#### Sample input
+{
+    {
+    "restaurantId":"f41924cf-43a3-4525-a694-76a0435f5853",
+    "mealType":"Dinner",
+    "menuItems":[
+        {
+            "itemName":"Pepperoni Pizza",
+            "itemPrice":"2",
+            "itemDescription":"Made with the finest pork in town"
+        },
+        {
+            "itemName":"Kolkata Rolls",
+            "itemPrice":"3",
+            "itemDescription":"One of the finest dishes straight from India"
+        },
+        {
+            "itemName":"Mac and Cheese",
+            "itemPrice":"4",
+            "itemDescription":"Go back to the basics with this chef special"
+        }
+     ]
+}
+}
+#### Sample output
+ HttpStatus: 201 Created
+{
+    "menuId": "41b6f704-63e1-4815-8ae2-9eb015bc143b",
+    "menuItems": [
+        {
+            "menuItemId": "202663b1-472f-4258-b7a7-83116c6bd4a2",
+            "itemName": "Pepperoni Pizza",
+            "itemPrice": "2",
+            "itemDescription": "Made with the finest pork in town"
+        },
+        {
+            "menuItemId": "46c25ed8-1360-4828-aa99-18417ce7eab2",
+            "itemName": "Kolkata Rolls",
+            "itemPrice": "3",
+            "itemDescription": "One of the finest dishes straight from India"
+        },
+        {
+            "menuItemId": "e6dfde0b-cc54-4200-b3ca-9e0eefe25a09",
+            "itemName": "Mac and Cheese",
+            "itemPrice": "4",
+            "itemDescription": "Go back to the basics with this chef special"
+        }
+    ],
+    "restaurantId": "f41924cf-43a3-4525-a694-76a0435f5853",
+    "mealType": "DINNER"
 }
    
