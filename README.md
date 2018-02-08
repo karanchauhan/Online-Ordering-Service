@@ -70,13 +70,16 @@ Using this API, a user can create a restaurant. He can choose to add list of men
 
 
 #### Sample input
+```json
 {
     "name": "Raylene Continental House",
     "address": "New York",
     "minOrder": 20,
     "rating": 4.7
 }
+```
 #### Sample output
+```json
  HttpStatus: 201 Created
 {
     "id": "f41924cf-43a3-4525-a694-76a0435f5853",
@@ -85,6 +88,7 @@ Using this API, a user can create a restaurant. He can choose to add list of men
     "minOrder": 20,
     "rating": 4.7
 }
+```
 
 ### 3.2 POST /restaurant/{id}
 
