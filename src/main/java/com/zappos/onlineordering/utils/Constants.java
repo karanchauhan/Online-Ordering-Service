@@ -6,6 +6,10 @@ public class Constants {
 
 	public static final String MENU_BASE_ENDPOINT = "/menu";
 
+	public static final String PATH_VARIABLE_ID = "/{id}";
+
+	public static final String ITEM = "/item";
+
 	public static final String CONTENT_TYPE_JSON = "application/json";
 
 	public static final String TABLE_MENU = "Menu";

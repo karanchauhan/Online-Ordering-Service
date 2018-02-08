@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.zappos.onlineordering.model.DeleteMenuItemRequest;
 import com.zappos.onlineordering.model.Menu;
+import com.zappos.onlineordering.model.MenuItem;
 import com.zappos.onlineordering.model.Restaurant;
 import com.zappos.onlineordering.model.RestaurantResponse;
 import com.zappos.onlineordering.repository.MenuRepository;
@@ -40,13 +42,13 @@ public class RestaurantServiceImpl implements RestaurantService {
 		if (null == restaurant) {
 			return null; // Restaurant not found
 		}
-		type = type.toUpperCase();
 
 		RestaurantResponse resp = new RestaurantResponse();
 		resp.getMetadata(restaurant);
 		List<Menu> menus = new ArrayList<>();
 
 		if (null != type) {
+			type = type.toUpperCase();
 			if (!restaurant.getMealTypes().containsKey(type)) {
 				return null; // Meal type not found
 			}
@@ -76,6 +78,41 @@ public class RestaurantServiceImpl implements RestaurantService {
 		request.getMenuItems().forEach(m -> m.setMenuItemId(generateId()));
 		restRepo.save(restaurant);
 		return menuRepo.save(request);
+	}
+
+	@Override
+	public Menu addMenuItem(MenuItem request, String id) {
+		Menu menu = menuRepo.findOne(id);
+		request.setMenuItemId(generateId());
+		menu.getMenuItems().add(request);
+		return menuRepo.save(menu);
+	}
+
+	@Override
+	public void removeMenuItem(DeleteMenuItemRequest req) {
+		Menu menu = menuRepo.findOne(req.getMenuId());
+		menu.getMenuItems().removeIf(m -> {
+			return m.getMenuItemId().equals(req.getMenuItemId());
+		});
+		menuRepo.save(menu);
+	}
+
+	@Override
+	public void removeMenu(String id) {
+		Menu menu = menuRepo.findOne(id);
+		Restaurant restaurant = restRepo.findOne(menu.getRestaurantId());
+		restaurant.getMealTypes().remove(menu.getMealType());
+		restRepo.save(restaurant);
+		menuRepo.delete(id);
+	}
+
+	@Override
+	public void removeRestaurant(String id) {
+		Restaurant restaurant = restRepo.findOne(id);
+		for (String mealType : restaurant.getMealTypes().keySet()) {
+			menuRepo.delete(restaurant.getMealTypes().get(mealType));
+		}
+		restRepo.delete(id);
 	}
 
 	private String generateId() {

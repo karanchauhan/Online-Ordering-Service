@@ -25,6 +25,7 @@ public class Restaurant {
 	@DynamoDBAttribute
 	String address;
 
+	@JsonInclude(Include.NON_NULL)
 	@DynamoDBAttribute
 	Map<String, String> mealTypes;
 
