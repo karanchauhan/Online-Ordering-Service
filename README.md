@@ -178,6 +178,7 @@ GET http://127.0.0.1:8080/restaurant/f41924cf-43a3-4525-a694-76a0435f5853?type=d
 ```
 #### Sample output
 ```json
+HttpStatus: 200 OK
 {
     "id": "f41924cf-43a3-4525-a694-76a0435f5853",
     "name": "Raylene Continental House",
@@ -191,8 +192,8 @@ GET http://127.0.0.1:8080/restaurant/f41924cf-43a3-4525-a694-76a0435f5853?type=d
                 {
                     "menuItemId": "202663b1-472f-4258-b7a7-83116c6bd4a2",
                     "itemName": "Pepperoni Pizza",
-                    "itemPrice": "2",
-                    "itemDescription": "Made with the finest pork in town"
+                    "itemPrice": "2",
+                    "itemDescription": "Made with the finest pork in town"
                 },
                 {
                     "menuItemId": "46c25ed8-1360-4828-aa99-18417ce7eab2",
@@ -211,6 +212,126 @@ GET http://127.0.0.1:8080/restaurant/f41924cf-43a3-4525-a694-76a0435f5853?type=d
             "mealType": "DINNER"
         }
     ]
+}
+```
+
+### 3.4 POST /menu/{id}/item
+
+This API adds a menu item to an existing menu with menuId as the one in the path parameter. Returns the complete updated menu.
+
+#### Request body
+| Field        | Type           | Description  |  Required  |
+| ------------- |:-------------:| :-------------| :-------------|
+|itemName    | String | Name of menu item | Yes |
+|itemPrice    | String | Price of menu item | Yes |
+|itemDescription    | String | Description of menu item | No |
+
+#### Sample input
+```json
+HttpStatus: 201 Created
+POST http://127.0.0.1:8080/menu/41b6f704-63e1-4815-8ae2-9eb015bc143b/item
+{
+            "itemName": "The Baconator",
+            "itemPrice": "7.5",
+            "itemDescription": "One of this week's specials"
+}
+```
+#### Sample output
+```json
+{
+    "menuId": "41b6f704-63e1-4815-8ae2-9eb015bc143b",
+    "menuItems": [
+        {
+            "menuItemId": "202663b1-472f-4258-b7a7-83116c6bd4a2",
+            "itemName": "Pepperoni Pizza",
+            "itemPrice": "2",
+            "itemDescription": "Made with the finest pork in town"
+        },
+        {
+            "menuItemId": "46c25ed8-1360-4828-aa99-18417ce7eab2",
+            "itemName": "Kolkata Rolls",
+            "itemPrice": "3",
+            "itemDescription": "One of the finest dishes straight from India"
+        },
+        {
+            "menuItemId": "e6dfde0b-cc54-4200-b3ca-9e0eefe25a09",
+            "itemName": "Mac and Cheese",
+            "itemPrice": "4",
+            "itemDescription": "Go back to the basics with this chef special"
+        },
+        {
+            "menuItemId": "51eb721f-e0ac-424c-b934-7995c635ab3d",
+            "itemName": "The Baconator",
+            "itemPrice": "7.5",
+            "itemDescription": "One of this week's specials"
+        }
+    ],
+    "restaurantId": "f41924cf-43a3-4525-a694-76a0435f5853",
+    "mealType": "DINNER"
+}
+```
+
+### 3.5 DELETE /menu/item
+
+This API deletes a menu item from a menu.
+
+#### Request body
+| Field        | Type           | Description  |  Required  |
+| ------------- |:-------------:| :-------------| :-------------|
+|menuId    | String | Id of menu | Yes |
+|menuItemId    | String | Id of menu item | Yes |
+
+#### Sample input
+```json
+DELETE http://127.0.0.1:8080/menu/item
+{
+	"menuId":"e8dfc246-ef55-4b29-a20c-f3e74dd3391f",
+	"menuItemId":"81fbce19-53ba-4c7c-8e4f-82ff1d989dd6"
+}
+```
+### Sample output
+```json
+HttpStatus: 200 OK
+{
+    "status": "0",
+    "message": "Menu Item deleted successfully"
+}
+```
+
+### 3.6 DELETE /menu/{id}
+
+This API deletes a menu for a restaurant. Updates mealType map for restaurant.
+
+#### Sample input
+```json
+DELETE http://127.0.0.1:8080/menu/41b6f704-63e1-4815-8ae2-9eb015bc143b
+{
+	"menuId":"e8dfc246-ef55-4b29-a20c-f3e74dd3391f",
+	"menuItemId":"81fbce19-53ba-4c7c-8e4f-82ff1d989dd6"
+}
+```
+### Sample output
+```json
+HttpStatus: 200 OK
+{
+    "status": "0",
+    "message": "Menu deleted successfully"
+}
+```
+
+### 3.4 DELETE /restaurant/{id}
+
+This API deletes a restaurant and all its linked menus.
+
+#### Sample input
+```json
+```
+### Sample output
+```json
+HttpStatus: 200 OK
+{
+    "status": "0",
+    "message": "Restaurant deleted successfully"
 }
 ```
 
