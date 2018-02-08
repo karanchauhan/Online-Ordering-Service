@@ -319,12 +319,13 @@ HttpStatus: 200 OK
 }
 ```
 
-### 3.4 DELETE /restaurant/{id}
+### 3.7 DELETE /restaurant/{id}
 
 This API deletes a restaurant and all its linked menus.
 
 #### Sample input
 ```json
+DELETE http://127.0.0.1:8080/restaurant/f41924cf-43a3-4525-a694-76a0435f5853
 ```
 ### Sample output
 ```json
