@@ -6,13 +6,13 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
 @DynamoDBTable(tableName = "MenuItem")
 public class MenuItem {
-	
+
 	String menuItemId;
 
 	String itemName;
-		
+
 	String itemPrice;
-	
+
 	String itemDescription;
 
 	@DynamoDBHashKey(attributeName = "Id")
@@ -50,8 +50,5 @@ public class MenuItem {
 	public void setItemDescription(String itemDescription) {
 		this.itemDescription = itemDescription;
 	}
-	
-	public MenuItem(String string, String string2, String string3) {
-		// TODO Auto-generated constructor stub
-	}
+
 }

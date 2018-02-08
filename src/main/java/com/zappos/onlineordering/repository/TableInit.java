@@ -42,9 +42,6 @@ public class TableInit {
 		if (!tableNames.contains(Constants.TABLE_MENU)) {
 			createTable(dynamoDB, Constants.TABLE_MENU);
 		}
-		if (!tableNames.contains(Constants.TABLE_MENU_ITEM)) {
-			createTable(dynamoDB, Constants.TABLE_MENU_ITEM);
-		}
 	}
 
 	private void createTable(DynamoDB dynamoDB, String tableName) {

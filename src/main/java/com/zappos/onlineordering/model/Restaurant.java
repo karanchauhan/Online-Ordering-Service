@@ -1,6 +1,6 @@
 package com.zappos.onlineordering.model;
 
-import java.util.List;
+import java.util.Map;
 
 import javax.validation.constraints.Size;
 
@@ -25,8 +25,8 @@ public class Restaurant {
 	@DynamoDBAttribute
 	String address;
 
-	@JsonInclude(Include.NON_NULL)
-	List<Menu> menus;
+	@DynamoDBAttribute
+	Map<String, String> mealTypes;
 
 	@JsonInclude(Include.NON_NULL)
 	@DynamoDBAttribute
@@ -38,8 +38,8 @@ public class Restaurant {
 
 	@Override
 	public String toString() {
-		return "Restaurant [id=" + id + ", name=" + name + ", address=" + address + ", menus=" + menus + ", minOrder="
-				+ minOrder + ", rating=" + rating + "]";
+		return "Restaurant [id=" + id + ", name=" + name + ", address=" + address + ", menuIds=" + mealTypes
+				+ ", minOrder=" + minOrder + ", rating=" + rating + "]";
 	}
 
 	public String getId() {
@@ -66,14 +66,6 @@ public class Restaurant {
 		this.address = address;
 	}
 
-	public List<Menu> getMenus() {
-		return menus;
-	}
-
-	public void setMenus(List<Menu> menus) {
-		this.menus = menus;
-	}
-
 	public Double getMinOrder() {
 		return minOrder;
 	}
@@ -90,17 +82,11 @@ public class Restaurant {
 		this.rating = rating;
 	}
 
-	public Restaurant(String id, String name, String address, List<Menu> menus, Double minOrder, Double rating) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.address = address;
-		this.menus = menus;
-		this.minOrder = minOrder;
-		this.rating = rating;
+	public Map<String, String> getMealTypes() {
+		return mealTypes;
 	}
 
-	public Restaurant() {
+	public void setMealTypes(Map<String, String> mealTypes) {
+		this.mealTypes = mealTypes;
 	}
-
 }

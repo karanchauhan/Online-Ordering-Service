@@ -2,20 +2,20 @@ package com.zappos.onlineordering.model;
 
 import java.util.List;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
 @DynamoDBTable(tableName = "Menu")
 public class Menu {
-	
+
 	@DynamoDBHashKey(attributeName = "Id")
 	String menuId;
-	
+
 	List<MenuItem> menuItems;
-	
-	@DynamoDBAttribute
-	MealType mealType;
+
+	String restaurantId;
+
+	String mealType;
 
 	public String getMenuId() {
 		return menuId;
@@ -33,11 +33,20 @@ public class Menu {
 		this.menuItems = menuItems;
 	}
 
-	public MealType getMealType() {
+	public String getRestaurantId() {
+		return restaurantId;
+	}
+
+	public void setRestaurantId(String restaurantId) {
+		this.restaurantId = restaurantId;
+	}
+
+	public String getMealType() {
 		return mealType;
 	}
 
-	public void setMealType(MealType mealType) {
+	public void setMealType(String mealType) {
 		this.mealType = mealType;
 	}
+
 }
