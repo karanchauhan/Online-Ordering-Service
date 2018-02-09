@@ -26,22 +26,19 @@ public class RestaurantController {
 	@Autowired
 	private RestaurantService restaurantService;
 
-	// POST /restaurant creates a restaurant
-	// POST /restaurant/{id} creates a menu for a restaurant of a particular type
-	// GET /restaurant?type= gets all menus for a restaurant for particular type or
-	// all types
-	// POST /menu/{id}/item adds item to menu for menuId = id
-	// DELETE /menu/item removes item from menu
-	// DELETE /menu/{id} removes menu from restaurant
-	// DELETE /restaurant removes a restaurant
-
 	@PostMapping(value = Constants.ADD_RESTAURANT_BASE_ENDPOINT, consumes = Constants.CONTENT_TYPE_JSON)
 	public ResponseEntity<?> createRestaurant(@RequestBody Restaurant restaurant) {
+		if (null == restaurant.getAddress() || null == restaurant.getName()) {
+			return getBadRequestOutput();
+		}
 		return new ResponseEntity<Restaurant>(restaurantService.createRestaurant(restaurant), HttpStatus.CREATED);
 	}
 
 	@PostMapping(value = Constants.ADD_MENU_BASE_ENDPOINT, produces = Constants.CONTENT_TYPE_JSON)
 	public ResponseEntity<?> createRestaurantMenu(@RequestBody Menu menu) {
+		if (null == menu.getRestaurantId() || null == menu.getMealType()) {
+			getBadRequestOutput();
+		}
 		Menu createdMenu = restaurantService.createMenu(menu);
 		return createdMenu == null ? new ResponseEntity<RestaurantResponse>(HttpStatus.NOT_FOUND)
 				: new ResponseEntity<Menu>(createdMenu, HttpStatus.CREATED);
@@ -60,7 +57,7 @@ public class RestaurantController {
 			+ Constants.ITEM, produces = Constants.CONTENT_TYPE_JSON)
 	public ResponseEntity<?> addMenuItem(@PathVariable("id") String id, @RequestBody MenuItem menu) {
 		if (null == menu.getItemName() || null == menu.getItemPrice()) {
-			return new ResponseEntity<>(new StatusResponse("400", "Input incorrect"), HttpStatus.BAD_REQUEST);
+			return getBadRequestOutput();
 		}
 		return new ResponseEntity<Menu>(restaurantService.addMenuItem(menu, id), HttpStatus.CREATED);
 	}
@@ -68,7 +65,7 @@ public class RestaurantController {
 	@DeleteMapping(value = Constants.MENU_BASE_ENDPOINT + Constants.ITEM)
 	public ResponseEntity<?> removeMenuItem(@RequestBody DeleteMenuItemRequest menuItemToDelete) {
 		if (null == menuItemToDelete.getMenuItemId() || null == menuItemToDelete.getMenuId()) {
-			return new ResponseEntity<>(new StatusResponse("400", "Input incorrect"), HttpStatus.BAD_REQUEST);
+			return getBadRequestOutput();
 		}
 		StatusResponse resp = restaurantService.removeMenuItem(menuItemToDelete);
 		return resp == null ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
@@ -87,6 +84,14 @@ public class RestaurantController {
 		StatusResponse resp = restaurantService.removeRestaurant(id);
 		return resp == null ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
 				: new ResponseEntity<StatusResponse>(resp, HttpStatus.OK);
+	}
+
+	private ResponseEntity<?> getBadRequestOutput() {
+		return new ResponseEntity<StatusResponse>(
+				new StatusResponse("400",
+						"Incorrect Input. Check spec on https://github.com/karanchauhan/Online-Ordering-Service"),
+				HttpStatus.BAD_REQUEST);
+
 	}
 
 }

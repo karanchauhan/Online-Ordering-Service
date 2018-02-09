@@ -32,61 +32,53 @@ import com.zappos.onlineordering.util.TestUtil;
 import com.zappos.onlineordering.utils.Constants;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes=OnlineOrderingServiceApplication.class , webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = OnlineOrderingServiceApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-@TestPropertySource(properties = { 
-  "amazon.dynamodb.endpoint=http://localhost:8000/", 
-  "amazon.aws.accesskey=test1", 
-  "amazon.aws.secretkey=test231" })
-public class RestaurantControllerTest  {
- 
+@TestPropertySource(properties = { "amazon.dynamodb.endpoint=http://localhost:8000/", "amazon.aws.accesskey=test1",
+		"amazon.aws.secretkey=test231" })
+public class RestaurantControllerTest {
+
 	@Autowired
-    private MockMvc mockMvc;
-	
+	private MockMvc mockMvc;
+
 	@MockBean
 	private RestaurantService restaurantService;
- 
-    @Autowired
-    MenuRepository menuRepository;
-    
-    @Autowired
-    RestaurantRepository restaurantRepository;
-    
-    RestaurantResponse mockRestaurant;
-    
-    Restaurant restaurant;
- 
-    @Before
-    public void setup() throws Exception {
-    		restaurant = TestUtil.getSampleRestaurant(); 
-        restaurantRepository.save(restaurant);
-        mockRestaurant = new RestaurantResponse();
-        mockRestaurant.setId("1");
-        mockRestaurant.setName("Chillis");
-       
-    }
-    
-    @Test
-	public void testGetRestaurantMenu() throws Exception {		
-		Mockito.when(
-				restaurantService.getRestaurantMenu(Mockito.anyString(),
-						Mockito.anyString())).thenReturn(mockRestaurant);
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get(
-				"/restaurant/1").accept(
-				MediaType.APPLICATION_JSON);
+
+	@Autowired
+	MenuRepository menuRepository;
+
+	@Autowired
+	RestaurantRepository restaurantRepository;
+
+	RestaurantResponse mockRestaurant;
+
+	Restaurant restaurant;
+
+	@Before
+	public void setup() throws Exception {
+		restaurant = TestUtil.getSampleRestaurant();
+		restaurantRepository.save(restaurant);
+		mockRestaurant = new RestaurantResponse();
+		mockRestaurant.setId("1");
+		mockRestaurant.setName("Chillis");
+
+	}
+
+	@Test
+	public void testGetRestaurantMenu() throws Exception {
+		Mockito.when(restaurantService.getRestaurantMenu(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(mockRestaurant);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/restaurant/1").accept(MediaType.APPLICATION_JSON);
 		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 		String expected = "{id:\"1\",name:Chillis}";
-		JSONAssert.assertEquals(expected, result.getResponse()
-				.getContentAsString(), false);
+		JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
 	}
-    
-    @Test
+
+	@Test
 	public void testCreateRestaurant() throws Exception {
-		Mockito.when(
-				restaurantService.createRestaurant(restaurant)).thenReturn(restaurant);
-		RequestBuilder requestBuilder = MockMvcRequestBuilders
-				.post(Constants.ADD_RESTAURANT_BASE_ENDPOINT)
-				.accept(MediaType.APPLICATION_JSON).content("{\"id\":\"1\",\"name\":\"Chillis\"}")
+		Mockito.when(restaurantService.createRestaurant(restaurant)).thenReturn(restaurant);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post(Constants.ADD_RESTAURANT_BASE_ENDPOINT)
+				.accept(MediaType.APPLICATION_JSON).content("{\"address\":\"400, SW 38th Avenu\",\"name\":\"Chillis\"}")
 				.contentType(MediaType.APPLICATION_JSON);
 		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 		MockHttpServletResponse response = result.getResponse();

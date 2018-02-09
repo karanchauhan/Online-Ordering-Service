@@ -39,8 +39,8 @@ public class Restaurant {
 
 	@Override
 	public String toString() {
-		return "Restaurant [id=" + id + ", name=" + name + ", address=" + address + ", mealTypeToMenuIds=" + mealTypeToMenuIds
-				+ ", minOrder=" + minOrder + ", rating=" + rating + "]";
+		return "Restaurant [id=" + id + ", name=" + name + ", address=" + address + ", mealTypeToMenuIds="
+				+ mealTypeToMenuIds + ", minOrder=" + minOrder + ", rating=" + rating + "]";
 	}
 
 	public String getId() {
@@ -83,11 +83,11 @@ public class Restaurant {
 		this.rating = rating;
 	}
 
-	public Map<String, String> getMealTypes() {
+	public Map<String, String> getMealTypeToMenuIds() {
 		return mealTypeToMenuIds;
 	}
 
-	public void setMealTypes(Map<String, String> mealTypes) {
-		this.mealTypeToMenuIds = mealTypes;
+	public void setMealTypeToMenuIds(Map<String, String> mealTypeToMenuIds) {
+		this.mealTypeToMenuIds = mealTypeToMenuIds;
 	}
 }

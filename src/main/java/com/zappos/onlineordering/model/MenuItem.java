@@ -18,7 +18,7 @@ public class MenuItem {
 	public MenuItem() {
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public MenuItem(String menuItemId, String itemName, String itemPrice, String itemDescription) {
 		super();
 		this.menuItemId = menuItemId;

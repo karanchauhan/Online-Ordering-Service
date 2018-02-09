@@ -48,15 +48,15 @@ public class RestaurantServiceImpl implements RestaurantService {
 
 		if (null != type) {
 			type = type.toUpperCase();
-			if (!restaurant.getMealTypes().containsKey(type)) {
+			if (!restaurant.getMealTypeToMenuIds().containsKey(type)) {
 				return null; // Meal type not found
 			}
-			menus.add(menuRepository.findOne(restaurant.getMealTypes().get(type)));
+			menus.add(menuRepository.findOne(restaurant.getMealTypeToMenuIds().get(type)));
 
 		} else {
-			if (CollectionUtils.isNotEmpty(restaurant.getMealTypes().values())) {
-				for (String mealType : restaurant.getMealTypes().keySet()) {
-					menus.add(menuRepository.findOne(restaurant.getMealTypes().get(mealType)));
+			if (CollectionUtils.isNotEmpty(restaurant.getMealTypeToMenuIds().values())) {
+				for (String mealType : restaurant.getMealTypeToMenuIds().keySet()) {
+					menus.add(menuRepository.findOne(restaurant.getMealTypeToMenuIds().get(mealType)));
 				}
 			}
 
@@ -73,11 +73,11 @@ public class RestaurantServiceImpl implements RestaurantService {
 			return null;
 		}
 		String menuId = generateId();
-		if (null == restaurant.getMealTypes()) {
-			restaurant.setMealTypes(new HashMap<>());
+		if (null == restaurant.getMealTypeToMenuIds()) {
+			restaurant.setMealTypeToMenuIds(new HashMap<>());
 		}
 		menu.setMealType(menu.getMealType().toUpperCase());
-		restaurant.getMealTypes().put(menu.getMealType(), menuId);
+		restaurant.getMealTypeToMenuIds().put(menu.getMealType(), menuId);
 		menu.setMenuId(menuId);
 
 		menu.getMenuItems().forEach(m -> m.setMenuItemId(generateId()));
@@ -103,7 +103,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 			return m.getMenuItemId().equals(req.getMenuItemId());
 		});
 		menuRepository.save(menu);
-		return new StatusResponse("0", "Successfully delete menu item");
+		return new StatusResponse("0", "Successfully deleted menu item");
 	}
 
 	@Override
@@ -113,10 +113,10 @@ public class RestaurantServiceImpl implements RestaurantService {
 			return null;
 		}
 		Restaurant restaurant = restaurantRepository.findOne(menu.getRestaurantId());
-		restaurant.getMealTypes().remove(menu.getMealType());
+		restaurant.getMealTypeToMenuIds().remove(menu.getMealType());
 		restaurantRepository.save(restaurant);
 		menuRepository.delete(id);
-		return new StatusResponse("0", "Successfully delete menu");
+		return new StatusResponse("0", "Successfully deleted menu");
 	}
 
 	@Override
@@ -125,13 +125,13 @@ public class RestaurantServiceImpl implements RestaurantService {
 		if (null == restaurant) {
 			return null;
 		}
-		if (restaurant.getMealTypes() != null) {
-			for (String mealType : restaurant.getMealTypes().keySet()) {
-				menuRepository.delete(restaurant.getMealTypes().get(mealType));
+		if (restaurant.getMealTypeToMenuIds() != null) {
+			for (String mealType : restaurant.getMealTypeToMenuIds().keySet()) {
+				menuRepository.delete(restaurant.getMealTypeToMenuIds().get(mealType));
 			}
 		}
 		restaurantRepository.delete(id);
-		return new StatusResponse("0", "Successfully delete restaurant");
+		return new StatusResponse("0", "Successfully deleted restaurant");
 	}
 
 	private String generateId() {

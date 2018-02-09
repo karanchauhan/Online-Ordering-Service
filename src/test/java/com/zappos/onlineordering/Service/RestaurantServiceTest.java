@@ -76,7 +76,7 @@ public class RestaurantServiceTest {
 		menuRepository.save(menu);
 		Map<String, String> map = new HashMap<>();
 		map.put(menu.getMealType(), menu.getMenuId());
-		createdRestaurant.setMealTypes(map);
+		createdRestaurant.setMealTypeToMenuIds(map);
 		restaurantRepository.save(createdRestaurant);
 
 		restaurantService.removeMenu(menu.getMenuId());
