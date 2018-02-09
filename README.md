@@ -14,7 +14,21 @@ I figured that a lot of db calls would have to be made for calls like DELETE /me
 be deleted from the database) - an async delete could have been implemented, but has been omitted in the interest of time.
 Validations could be extracted out and handled using a custom Exception Class- ApiException and an ExceptionHandler. That has been left as a TODO.
 
-## 2. Directory Structure
+## 2. Requirements
+
+The server requires a DynamoDB server running locally for it to run, and also for building, since the unit test cases use the dynamoDb to validate the APIs. After downloading dynamoDbLocal, and unzipping it to a folder, we get a directory with, the following folders,
+```
+DynamoDBLocalLatest		hamcrest-core-1.3.jar
+dynamodb_local_latest.zip	junit-4.12.jar
+```
+cd into the folder : DynamoDBLocalLatest and run the following command to start dynamoDBLocal server.
+
+```
+java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedD
+```
+
+
+## 3. Directory Structure
 
 
 ```
@@ -53,11 +67,11 @@ main
 ```
 
 
-## 3. APIs
+## 4. APIs
 
 The project has implemented the following APIs for the food ordering service:
 
-### 3.1 POST /addRestaurant
+### 4.1 POST /addRestaurant
 
 Using this API, a user can create a restaurant. He can choose to add list of menus now, or via the POST /menu
 
@@ -92,7 +106,7 @@ POST http://127.0.0.1:8080/addRestaurant
 }
 ```
 
-### 3.2 POST /addMenu
+### 4.2 POST /addMenu
 
 Using this API, a user can create a menu for a restaurant with passed restaurantId. 
 
@@ -167,7 +181,7 @@ POST http://127.0.0.1:8080/addMenu/
 }
 ```
 
-### 3.3 GET /restaurant/{id}?type=
+### 4.3 GET /restaurant/{id}?type=
 
 This API returns a complete view of the restaurant with all its menus. If the query parameter, 'type' is set, then it will return a menu of that mealType only.
 
@@ -214,7 +228,7 @@ HttpStatus: 200 OK
 }
 ```
 
-### 3.4 POST /menu/{id}/item
+### 4.4 POST /menu/{id}/item
 
 This API adds a menu item to an existing menu with menuId as the one in the path parameter. Returns the complete updated menu.
 
@@ -270,7 +284,7 @@ POST http://127.0.0.1:8080/menu/41b6f704-63e1-4815-8ae2-9eb015bc143b/item
 }
 ```
 
-### 3.5 DELETE /menu/item
+### 4.5 DELETE /menu/item
 
 This API deletes a menu item from a menu.
 
@@ -297,7 +311,7 @@ HttpStatus: 200 OK
 }
 ```
 
-### 3.6 DELETE /menu/{id}
+### 4.6 DELETE /menu/{id}
 
 This API deletes a menu for a restaurant. Updates mealType map for restaurant.
 
@@ -318,7 +332,7 @@ HttpStatus: 200 OK
 }
 ```
 
-### 3.7 DELETE /restaurant/{id}
+### 4.7 DELETE /restaurant/{id}
 
 This API deletes a restaurant and all its linked menus.
 
