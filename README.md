@@ -12,6 +12,7 @@ in the local dynamo db of the tester; if they don't it creates them.
 I have implemented the persistance layer with two databases, Restaurant and Menu. The MenuItem table was ignored because
 I figured that a lot of db calls would have to be made for calls like DELETE /menu (all menuitem documents would have had to 
 be deleted from the database) - an async delete could have been implemented, but has been omitted in the interest of time.
+Validations could be extracted out and handled using a custom Exception Class- ApiException and an ExceptionHandler. That has been left as a TODO.
 
 ## 2. Directory Structure
 
@@ -56,7 +57,7 @@ main
 
 The project has implemented the following APIs for the food ordering service:
 
-### 3.1 POST /restaurant
+### 3.1 POST /addRestaurant
 
 Using this API, a user can create a restaurant. He can choose to add list of menus now, or via the POST /menu
 
@@ -91,9 +92,9 @@ POST http://127.0.0.1:8080/restaurant
 }
 ```
 
-### 3.2 POST /restaurant/{id}
+### 3.2 POST /addMenu
 
-Using this API, a user can create a menu for a restaurant. 
+Using this API, a user can create a menu for a restaurant with passed restaurantId. 
 
 #### Request body
 | Field        | Type           | Description  |  Required  |
@@ -168,7 +169,7 @@ POST http://127.0.0.1:8080/menu/
 }
 ```
 
-### 3.3 GET /restaurant?type=
+### 3.3 GET /restaurant/{id}?type=
 
 This API returns a complete view of the restaurant with all its menus. If the query parameter, 'type' is set, then it will return a menu of that mealType only.
 
