@@ -72,7 +72,7 @@ Using this API, a user can create a restaurant. He can choose to add list of men
 
 #### Sample input
 ```json
-POST http://127.0.0.1:8080/restaurant
+POST http://127.0.0.1:8080/addRestaurant
 {
     "name": "Raylene Continental House",
     "address": "New York",
@@ -112,9 +112,8 @@ Using this API, a user can create a menu for a restaurant with passed restaurant
 
 ```json
 #### Sample input
-POST http://127.0.0.1:8080/menu/
+POST http://127.0.0.1:8080/addMenu/
 {
-    {
     "restaurantId":"f41924cf-43a3-4525-a694-76a0435f5853",
     "mealType":"Dinner",
     "menuItems":[
@@ -134,7 +133,6 @@ POST http://127.0.0.1:8080/menu/
             "itemDescription":"Go back to the basics with this chef special"
         }
      ]
-    }
 }
 ```
 
