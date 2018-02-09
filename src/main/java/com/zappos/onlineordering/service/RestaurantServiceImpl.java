@@ -5,15 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.zappos.onlineordering.model.DeleteMenuItemRequest;
 import com.zappos.onlineordering.model.Menu;
 import com.zappos.onlineordering.model.MenuItem;
 import com.zappos.onlineordering.model.Restaurant;
 import com.zappos.onlineordering.model.RestaurantResponse;
+import com.zappos.onlineordering.model.StatusResponse;
 import com.zappos.onlineordering.repository.MenuRepository;
 import com.zappos.onlineordering.repository.RestaurantRepository;
 
@@ -21,26 +22,24 @@ import com.zappos.onlineordering.repository.RestaurantRepository;
 public class RestaurantServiceImpl implements RestaurantService {
 
 	@Autowired
-	RestaurantRepository restRepo;
+	private RestaurantRepository restaurantRepository;
 
 	@Autowired
-	MenuRepository menuRepo;
-
-	@Autowired
-	DynamoDB db;
+	private MenuRepository menuRepository;
 
 	@Override
-	public Restaurant createRestaurant(Restaurant req) {
-		req.setId(generateId());
-		return restRepo.save(req);
+	public Restaurant createRestaurant(Restaurant restaurant) {
+		restaurant.setId(generateId());
+		return restaurantRepository.save(restaurant);
 	}
 
+	// TODO: Implement exception handling
 	@Override
-	public RestaurantResponse getRestaurantMenu(String type, String id) {
+	public RestaurantResponse getRestaurantMenu(String type, String restaurantId) {
 
-		Restaurant restaurant = restRepo.findOne(id);
+		Restaurant restaurant = restaurantRepository.findOne(restaurantId);
 		if (null == restaurant) {
-			return null; // Restaurant not found
+			return null; // Restaurant not found.
 		}
 
 		RestaurantResponse resp = new RestaurantResponse();
@@ -52,67 +51,87 @@ public class RestaurantServiceImpl implements RestaurantService {
 			if (!restaurant.getMealTypes().containsKey(type)) {
 				return null; // Meal type not found
 			}
-			menus.add(menuRepo.findOne(restaurant.getMealTypes().get(type)));
+			menus.add(menuRepository.findOne(restaurant.getMealTypes().get(type)));
 
 		} else {
-			for (String mealType : restaurant.getMealTypes().keySet()) {
-				menus.add(menuRepo.findOne(restaurant.getMealTypes().get(mealType)));
+			if (CollectionUtils.isNotEmpty(restaurant.getMealTypes().values())) {
+				for (String mealType : restaurant.getMealTypes().keySet()) {
+					menus.add(menuRepository.findOne(restaurant.getMealTypes().get(mealType)));
+				}
 			}
+
 		}
 		resp.setMenu(menus);
 		return resp;
 	}
 
 	@Override
-	public Menu createMenu(Menu request) {
+	public Menu createMenu(Menu menu) {
 
-		Restaurant restaurant = restRepo.findOne(request.getRestaurantId());
+		Restaurant restaurant = restaurantRepository.findOne(menu.getRestaurantId());
+		if (null == restaurant) {
+			return null;
+		}
 		String menuId = generateId();
 		if (null == restaurant.getMealTypes()) {
 			restaurant.setMealTypes(new HashMap<>());
 		}
-		request.setMealType(request.getMealType().toUpperCase());
-		restaurant.getMealTypes().put(request.getMealType(), menuId);
-		request.setMenuId(menuId);
+		menu.setMealType(menu.getMealType().toUpperCase());
+		restaurant.getMealTypes().put(menu.getMealType(), menuId);
+		menu.setMenuId(menuId);
 
-		request.getMenuItems().forEach(m -> m.setMenuItemId(generateId()));
-		restRepo.save(restaurant);
-		return menuRepo.save(request);
+		menu.getMenuItems().forEach(m -> m.setMenuItemId(generateId()));
+		restaurantRepository.save(restaurant);
+		return menuRepository.save(menu);
 	}
 
 	@Override
-	public Menu addMenuItem(MenuItem request, String id) {
-		Menu menu = menuRepo.findOne(id);
-		request.setMenuItemId(generateId());
-		menu.getMenuItems().add(request);
-		return menuRepo.save(menu);
+	public Menu addMenuItem(MenuItem menuItem, String menuId) {
+		Menu menu = menuRepository.findOne(menuId);
+		menuItem.setMenuItemId(generateId());
+		menu.getMenuItems().add(menuItem);
+		return menuRepository.save(menu);
 	}
 
 	@Override
-	public void removeMenuItem(DeleteMenuItemRequest req) {
-		Menu menu = menuRepo.findOne(req.getMenuId());
+	public StatusResponse removeMenuItem(DeleteMenuItemRequest req) {
+		Menu menu = menuRepository.findOne(req.getMenuId());
+		if (null == menu) {
+			return null;
+		}
 		menu.getMenuItems().removeIf(m -> {
 			return m.getMenuItemId().equals(req.getMenuItemId());
 		});
-		menuRepo.save(menu);
+		menuRepository.save(menu);
+		return new StatusResponse("0", "Successfully delete menu item");
 	}
 
 	@Override
-	public void removeMenu(String id) {
-		Menu menu = menuRepo.findOne(id);
-		Restaurant restaurant = restRepo.findOne(menu.getRestaurantId());
-		restaurant.getMealTypes().remove(menu.getMealType());
-		restRepo.save(restaurant);
-		menuRepo.delete(id);
-	}
-
-	@Override
-	public void removeRestaurant(String id) {
-		Restaurant restaurant = restRepo.findOne(id);
-		for (String mealType : restaurant.getMealTypes().keySet()) {
-			menuRepo.delete(restaurant.getMealTypes().get(mealType));
+	public StatusResponse removeMenu(String id) {
+		Menu menu = menuRepository.findOne(id);
+		if (null == menu) {
+			return null;
 		}
-		restRepo.delete(id);
+		Restaurant restaurant = restaurantRepository.findOne(menu.getRestaurantId());
+		restaurant.getMealTypes().remove(menu.getMealType());
+		restaurantRepository.save(restaurant);
+		menuRepository.delete(id);
+		return new StatusResponse("0", "Successfully delete menu");
+	}
+
+	@Override
+	public StatusResponse removeRestaurant(String id) {
+		Restaurant restaurant = restaurantRepository.findOne(id);
+		if (null == restaurant) {
+			return null;
+		}
+		if (restaurant.getMealTypes() != null) {
+			for (String mealType : restaurant.getMealTypes().keySet()) {
+				menuRepository.delete(restaurant.getMealTypes().get(mealType));
+			}
+		}
+		restaurantRepository.delete(id);
+		return new StatusResponse("0", "Successfully delete restaurant");
 	}
 
 	private String generateId() {

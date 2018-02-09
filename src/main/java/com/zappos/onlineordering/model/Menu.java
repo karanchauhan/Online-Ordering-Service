@@ -7,15 +7,19 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
 @DynamoDBTable(tableName = "Menu")
 public class Menu {
+	
+	public Menu() {
+		// TODO Auto-generated constructor stub
+	}
 
 	@DynamoDBHashKey(attributeName = "Id")
-	String menuId;
+	private String menuId;
 
-	List<MenuItem> menuItems;
+	private List<MenuItem> menuItems;
 
-	String restaurantId;
+	private String restaurantId;
 
-	String mealType;
+	private String mealType;
 
 	public String getMenuId() {
 		return menuId;

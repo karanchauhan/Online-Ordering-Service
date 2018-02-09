@@ -3,10 +3,11 @@ package com.zappos.onlineordering.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,7 +24,7 @@ import com.zappos.onlineordering.utils.Constants;
 public class RestaurantController {
 
 	@Autowired
-	RestaurantService restaurantService;
+	private RestaurantService restaurantService;
 
 	// POST /restaurant creates a restaurant
 	// POST /restaurant/{id} creates a menu for a restaurant of a particular type
@@ -34,18 +35,20 @@ public class RestaurantController {
 	// DELETE /menu/{id} removes menu from restaurant
 	// DELETE /restaurant removes a restaurant
 
-	@RequestMapping(value = Constants.RESTAURANT_BASE_ENDPOINT, method = RequestMethod.POST, consumes = Constants.CONTENT_TYPE_JSON)
-	public ResponseEntity<?> createRestaurant(@RequestBody Restaurant req) {
-		return new ResponseEntity<Restaurant>(restaurantService.createRestaurant(req), HttpStatus.CREATED);
+	@PostMapping(value = Constants.ADD_RESTAURANT_BASE_ENDPOINT, consumes = Constants.CONTENT_TYPE_JSON)
+	public ResponseEntity<?> createRestaurant(@RequestBody Restaurant restaurant) {
+		return new ResponseEntity<Restaurant>(restaurantService.createRestaurant(restaurant), HttpStatus.CREATED);
 	}
 
-	@RequestMapping(value = Constants.MENU_BASE_ENDPOINT, method = RequestMethod.POST, produces = Constants.CONTENT_TYPE_JSON)
-	public ResponseEntity<?> getRestaurant(@RequestBody Menu req) {
-		return new ResponseEntity<Menu>(restaurantService.createMenu(req), HttpStatus.CREATED);
+	@PostMapping(value = Constants.ADD_MENU_BASE_ENDPOINT, produces = Constants.CONTENT_TYPE_JSON)
+	public ResponseEntity<?> createRestaurantMenu(@RequestBody Menu menu) {
+		Menu createdMenu = restaurantService.createMenu(menu);
+		return createdMenu == null ? new ResponseEntity<RestaurantResponse>(HttpStatus.NOT_FOUND)
+				: new ResponseEntity<Menu>(createdMenu, HttpStatus.CREATED);
 	}
 
-	@RequestMapping(value = Constants.RESTAURANT_BASE_ENDPOINT
-			+ Constants.PATH_VARIABLE_ID, method = RequestMethod.GET, produces = Constants.CONTENT_TYPE_JSON)
+	@GetMapping(value = Constants.RESTAURANT_BASE_ENDPOINT
+			+ Constants.PATH_VARIABLE_ID, produces = Constants.CONTENT_TYPE_JSON)
 	public ResponseEntity<?> getRestaurantMenu(@RequestParam(value = "type", required = false) String type,
 			@PathVariable("id") String id) {
 		RestaurantResponse response = restaurantService.getRestaurantMenu(type, id);
@@ -53,31 +56,37 @@ public class RestaurantController {
 				: new ResponseEntity<RestaurantResponse>(response, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = Constants.MENU_BASE_ENDPOINT + Constants.PATH_VARIABLE_ID
-			+ Constants.ITEM, method = RequestMethod.POST, produces = Constants.CONTENT_TYPE_JSON)
-	public ResponseEntity<?> addMenuItem(@PathVariable("id") String id, @RequestBody MenuItem req) {
-		return new ResponseEntity<Menu>(restaurantService.addMenuItem(req, id), HttpStatus.CREATED);
+	@PostMapping(value = Constants.MENU_BASE_ENDPOINT + Constants.PATH_VARIABLE_ID
+			+ Constants.ITEM, produces = Constants.CONTENT_TYPE_JSON)
+	public ResponseEntity<?> addMenuItem(@PathVariable("id") String id, @RequestBody MenuItem menu) {
+		if (null == menu.getItemName() || null == menu.getItemPrice()) {
+			return new ResponseEntity<>(new StatusResponse("400", "Input incorrect"), HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<Menu>(restaurantService.addMenuItem(menu, id), HttpStatus.CREATED);
 	}
 
-	@RequestMapping(value = Constants.MENU_BASE_ENDPOINT + Constants.ITEM, method = RequestMethod.DELETE)
-	public ResponseEntity<?> removeMenuItem(@RequestBody DeleteMenuItemRequest req) {
-		restaurantService.removeMenuItem(req);
-		return new ResponseEntity<StatusResponse>(new StatusResponse("0", "Menu Item deleted successfully"),
-				HttpStatus.OK);
+	@DeleteMapping(value = Constants.MENU_BASE_ENDPOINT + Constants.ITEM)
+	public ResponseEntity<?> removeMenuItem(@RequestBody DeleteMenuItemRequest menuItemToDelete) {
+		if (null == menuItemToDelete.getMenuItemId() || null == menuItemToDelete.getMenuId()) {
+			return new ResponseEntity<>(new StatusResponse("400", "Input incorrect"), HttpStatus.BAD_REQUEST);
+		}
+		StatusResponse resp = restaurantService.removeMenuItem(menuItemToDelete);
+		return resp == null ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
+				: new ResponseEntity<StatusResponse>(resp, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = Constants.MENU_BASE_ENDPOINT + Constants.PATH_VARIABLE_ID, method = RequestMethod.DELETE)
+	@DeleteMapping(value = Constants.MENU_BASE_ENDPOINT + Constants.PATH_VARIABLE_ID)
 	public ResponseEntity<?> removeMenu(@PathVariable("id") String id) {
-		restaurantService.removeMenu(id);
-		return new ResponseEntity<StatusResponse>(new StatusResponse("0", "Menu deleted successfully"), HttpStatus.OK);
+		StatusResponse resp = restaurantService.removeMenu(id);
+		return resp == null ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
+				: new ResponseEntity<StatusResponse>(resp, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = Constants.RESTAURANT_BASE_ENDPOINT
-			+ Constants.PATH_VARIABLE_ID, method = RequestMethod.DELETE)
+	@DeleteMapping(value = Constants.RESTAURANT_BASE_ENDPOINT + Constants.PATH_VARIABLE_ID)
 	public ResponseEntity<?> removeRestaurant(@PathVariable("id") String id) {
-		restaurantService.removeRestaurant(id);
-		return new ResponseEntity<StatusResponse>(new StatusResponse("0", "Restaurant deleted successfully"),
-				HttpStatus.OK);
+		StatusResponse resp = restaurantService.removeRestaurant(id);
+		return resp == null ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
+				: new ResponseEntity<StatusResponse>(resp, HttpStatus.OK);
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.zappos.onlineordering.repository;
+package com.zappos.onlineordering.utils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -19,13 +19,12 @@ import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
 import com.amazonaws.services.dynamodbv2.model.KeyType;
 import com.amazonaws.services.dynamodbv2.model.ListTablesResult;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
-import com.zappos.onlineordering.utils.Constants;
 
 @Component
 public class TableInit {
 
 	@Autowired
-	AmazonDynamoDB amazonDynamoDB;
+	private AmazonDynamoDB amazonDynamoDB;
 
 	@PostConstruct
 	public void init() {
@@ -36,15 +35,15 @@ public class TableInit {
 		while (iter.hasNext()) {
 			tableNames.add(iter.next().getTableName());
 		}
-		if (!tableNames.contains(Constants.TABLE_RESTAURANT)) {
-			createTable(dynamoDB, Constants.TABLE_RESTAURANT);
+		if (!tableNames.contains(Constants.RESTAURANT_TABLE_NAME)) {
+			createTable(dynamoDB, Constants.RESTAURANT_TABLE_NAME);
 		}
-		if (!tableNames.contains(Constants.TABLE_MENU)) {
-			createTable(dynamoDB, Constants.TABLE_MENU);
+		if (!tableNames.contains(Constants.MENU_TABLE_NAME)) {
+			createTable(dynamoDB, Constants.MENU_TABLE_NAME);
 		}
 	}
 
-	private void createTable(DynamoDB dynamoDB, String tableName) {
+	public  void createTable(DynamoDB dynamoDB, String tableName) {
 		try {
 			List<AttributeDefinition> attributeDefinitions = new ArrayList<AttributeDefinition>();
 			attributeDefinitions.add(new AttributeDefinition().withAttributeName("Id").withAttributeType("S"));

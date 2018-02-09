@@ -2,8 +2,8 @@ package com.zappos.onlineordering.model;
 
 public class DeleteMenuItemRequest {
 
-	String menuId;
-	String menuItemId;
+	private String menuId;
+	private String menuItemId;
 
 	public String getMenuId() {
 		return menuId;

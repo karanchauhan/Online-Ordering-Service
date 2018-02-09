@@ -5,20 +5,21 @@ import com.zappos.onlineordering.model.Menu;
 import com.zappos.onlineordering.model.MenuItem;
 import com.zappos.onlineordering.model.Restaurant;
 import com.zappos.onlineordering.model.RestaurantResponse;
+import com.zappos.onlineordering.model.StatusResponse;
 
 public interface RestaurantService {
 
 	public Restaurant createRestaurant(Restaurant request);
 
-	public RestaurantResponse getRestaurantMenu(String type, String id);
+	public RestaurantResponse getRestaurantMenu(String menuType, String restaurantId);
 
 	public Menu createMenu(Menu request);
 
 	public Menu addMenuItem(MenuItem request, String id);
 
-	public void removeMenuItem(DeleteMenuItemRequest req);
+	public StatusResponse removeMenuItem(DeleteMenuItemRequest req);
 
-	public void removeMenu(String id);
+	public StatusResponse removeMenu(String id);
 
-	public void removeRestaurant(String id);
+	public StatusResponse removeRestaurant(String id);
 }

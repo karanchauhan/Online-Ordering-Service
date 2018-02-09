@@ -7,13 +7,25 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 @DynamoDBTable(tableName = "MenuItem")
 public class MenuItem {
 
-	String menuItemId;
+	private String menuItemId;
 
-	String itemName;
+	private String itemName;
 
-	String itemPrice;
+	private String itemPrice;
 
-	String itemDescription;
+	private String itemDescription;
+
+	public MenuItem() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	public MenuItem(String menuItemId, String itemName, String itemPrice, String itemDescription) {
+		super();
+		this.menuItemId = menuItemId;
+		this.itemName = itemName;
+		this.itemPrice = itemPrice;
+		this.itemDescription = itemDescription;
+	}
 
 	@DynamoDBHashKey(attributeName = "Id")
 	public String getMenuItemId() {

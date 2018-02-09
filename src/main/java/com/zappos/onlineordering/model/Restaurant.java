@@ -14,32 +14,32 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class Restaurant {
 
 	@DynamoDBHashKey(attributeName = "Id")
-	String id;
+	private String id;
 
 	@JsonInclude(Include.NON_NULL)
 	@DynamoDBAttribute
-	String name;
+	private String name;
 
 	@JsonInclude(Include.NON_NULL)
 	@Size(max = 140)
 	@DynamoDBAttribute
-	String address;
+	private String address;
 
 	@JsonInclude(Include.NON_NULL)
 	@DynamoDBAttribute
-	Map<String, String> mealTypes;
+	private Map<String, String> mealTypeToMenuIds;
 
 	@JsonInclude(Include.NON_NULL)
 	@DynamoDBAttribute
-	Double minOrder;
+	private Double minOrder;
 
 	@JsonInclude(Include.NON_NULL)
 	@DynamoDBAttribute
-	Double rating;
+	private Double rating;
 
 	@Override
 	public String toString() {
-		return "Restaurant [id=" + id + ", name=" + name + ", address=" + address + ", menuIds=" + mealTypes
+		return "Restaurant [id=" + id + ", name=" + name + ", address=" + address + ", mealTypeToMenuIds=" + mealTypeToMenuIds
 				+ ", minOrder=" + minOrder + ", rating=" + rating + "]";
 	}
 
@@ -84,10 +84,10 @@ public class Restaurant {
 	}
 
 	public Map<String, String> getMealTypes() {
-		return mealTypes;
+		return mealTypeToMenuIds;
 	}
 
 	public void setMealTypes(Map<String, String> mealTypes) {
-		this.mealTypes = mealTypes;
+		this.mealTypeToMenuIds = mealTypes;
 	}
 }
